@@ -22,13 +22,15 @@ public:
 
 	virtual bool Exit(AActor* actor) PURE_VIRTUAL(TEXT("NOT IMPLEMENTED YET"), return false; );
 
+	bool GetIsStateActive();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	virtual void StatefullTick(AActor* actor, float DeltaTime) PURE_VIRTUAL(TEXT("NOT IMPLEMENTED YET"););
 
-	void ChangeTo(FName StateName);
+	UEntityState* ChangeTo(FName StateName);
 
 	UPROPERTY()
 	bool IsStateActive;

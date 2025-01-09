@@ -19,7 +19,7 @@ bool UEntityState::Init(AActor* actor, bool first)
 	{
 		this->IsStateActive = true;
 	}
-	
+
 	return true;
 }
 
@@ -47,7 +47,7 @@ void UEntityState::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	}
 }
 
-void UEntityState::ChangeTo(FName StateName)
+UEntityState* UEntityState::ChangeTo(FName StateName)
 {
 	AActor* owner = this->GetOwner();
 	TSet<UActorComponent*> components = owner->GetComponents();
@@ -59,35 +59,40 @@ void UEntityState::ChangeTo(FName StateName)
 			UEntityState* currentState = Cast<UEntityState>(currentComponent);
 			if (currentState->EntityStateName.IsEqual(StateName)) 
 			{
-				UE_LOG(LogTemp, Log, TEXT("Exiting state: %s"), *this->EntityStateName.ToString())
+				UE_LOG(LogTemp, Log, TEXT("Exiting state: %s"), *this->EntityStateName.ToString());
 				bool exitSuccefull = this->Exit(owner);
 
 				if (exitSuccefull) 
 				{
 
-					UE_LOG(LogTemp, Log, TEXT("Exited state: %s"), *this->EntityStateName.ToString())
+					UE_LOG(LogTemp, Log, TEXT("Exited state: %s"), *this->EntityStateName.ToString());
 					this->IsStateActive = false;
 					bool initSuccessfull = currentState->Init(owner);
-					UE_LOG(LogTemp, Log, TEXT("Initiating state: %s"), *currentState->EntityStateName.ToString())
+					UE_LOG(LogTemp, Log, TEXT("Initiating state: %s"), *currentState->EntityStateName.ToString());
 
 					if (initSuccessfull) 
 					{
-						UE_LOG(LogTemp, Log, TEXT("Initiated state: %s"), *currentState->EntityStateName.ToString())
+						UE_LOG(LogTemp, Log, TEXT("Initiated state: %s"), *currentState->EntityStateName.ToString());
 						currentState->IsStateActive = true;
+						return currentState;
 					}
 					else 
 					{
-						UE_LOG(LogTemp, Log, TEXT("Not initiated state: %s"), *currentState->EntityStateName.ToString())
+						UE_LOG(LogTemp, Log, TEXT("Not initiated state: %s"), *currentState->EntityStateName.ToString());
 					}
 				}
 				else 
 				{
 					UE_LOG(LogTemp, Log, TEXT("Not exited state: %s"), *this->EntityStateName.ToString())
 				}
-
-				return;
 			}
 		}
 	}
+	
+	return NULL;
+}
 
+bool UEntityState::GetIsStateActive()
+{
+	return this->IsStateActive;
 }
